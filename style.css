@@ -1,0 +1,101 @@
+html  {
+    background-color: lightblue; /* For browsers that do not support gradients */
+    background-image: linear-gradient(lightgreen, lightblue); /* Standard syntax (must be last) */
+    font-family: 'Helvetica', serif;
+    -webkit-font-smoothing: antialiased;
+    text-align: center;
+  }
+
+  video#bgvid { 
+    position: fixed;
+    top: 50%;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: -100;
+    transform: translateX(-50%) translateY(-50%);
+    background-size: cover; 
+}
+
+header {
+  position: relative;
+  margin: 30px 0;
+}
+
+h1 {
+  color: black;
+  font-size: 50px;
+  font-weight: 600;
+  font-style: bold;
+  margin: 0;
+  text-transform: lowercase;
+}
+
+h2 {
+  color: #fff;
+  font-size: 24px;
+  font-style: italic;
+  font-weight: 400;
+  margin: 0 0 30px;
+}
+
+.keys {
+  display: block;
+  width: 100%;
+  height: 350px;
+  max-width: 880px;
+  position: relative;
+  margin: 0px auto 0;
+}
+
+.key {
+  position: relative;
+  border: 4px solid black;
+  border-radius: .5rem;
+  transition: all .07s ease;
+  display: block;
+  box-sizing: border-box;
+  z-index: 2;
+}
+
+.key:not(.non) {
+  float: left;
+  width: 10%;
+  height: 100%;
+  background: rgba(255, 255, 255, .8);    
+}
+
+.key.non {
+  position: absolute;
+  width: 6%;
+  height: 60%;
+  background: #000;
+  color: #eee;
+  top: 0;
+  z-index: 3;
+}
+
+.key[data-note="C#/Db"] {
+  left: 7%;
+}
+
+.key[data-note="D#/Eb"] {
+  left: 17%;
+}
+
+.key[data-note="F#/Gb"]  {
+  left: 37%;
+}
+
+.key[data-note="G#/Ab"] {
+  left: 47%;
+}
+
+.key[data-note="A#/Bb"] {
+  left: 57%;    
+}
+
+.key:hover{
+  opacity: .75;
+}
