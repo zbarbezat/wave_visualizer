@@ -15,6 +15,8 @@ intervals, and chords through an interactive piano keyboard interface
 JavaScript has a Math.sin() function. Not only will this be used to visualize the different chords,
 but also can be used to generate the sounds using dataURIs.
 
+simple tutorial: https://keithwhor.com/music/
+
 I imagine having multiple waves at once could be a potential issue.
 
 ### Creating the interface
