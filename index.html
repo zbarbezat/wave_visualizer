@@ -29,19 +29,37 @@
         </div>
     </body>
     <script>
-        var existingFrequencies = []; // global variable containing previously clicked buttons
+        var totFreq = []; // global variable containing previously clicked buttons
         var canvas = document.getElementById("myCanvas");
         var ctx = canvas.getContext("2d");
         var step = 60;
 
         $(".key").on("click", (function(event) {
             var canvas = document.getElementById("myCanvas");
-            console.log("this jawn was clicked.");
-            $(this).addClass('clicked');
+            console.log($(this).attr('class'));
+            $(this).toggleClass('key').toggleClass('key clicked-key');
             frequency = $(this)[0].id;
-            console.log(frequency);
-            plotSine(frequency);
+            if ($(this).attr('class') == "key clicked-key" || $(this).attr('class') == "non key clicked-key") {
+                totFreq.push(frequency);
+            }
+            else {
+                var index = totFreq.indexOf(frequency);
+                if (index > -1) {
+                totFreq.splice(index, 1);
+                }
+            }  
+            plotSine();
         }));
+
+        // $(".clicked-key").on("click", (function(event) {
+        //     console.log("Clicked key was cliiiiicked");
+        //     var canvas = document.getElementById("myCanvas");
+        //     $(this).toggleClass('key').toggleClass('clicked-key');
+        //     var frequency = $(this)[0].id;
+            
+            
+        //     plotSine();
+        // }));
 
         function showAxes(ctx,axes) {
             var canvas = document.getElementById("myCanvas");
@@ -68,7 +86,15 @@
             ctx.stroke();
         }
 
-        function plotSine(frequency) {
+        function calculateSine(x) {
+            y = 0;
+            for (var i = 0; i < totFreq.length; i++) {
+                y = y + Math.sin(totFreq[i] * x);
+            }
+            return y;
+        }
+
+        function plotSine() {
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, 500, 500);
@@ -85,7 +111,7 @@
 
             x = 0;
             while (x < width) {
-                y = height/2 + amplitude * Math.sin(frequency * x);
+                y = height/2 + amplitude * calculateSine(x);
                 ctx.lineTo(x, y);
                 x++;
             }

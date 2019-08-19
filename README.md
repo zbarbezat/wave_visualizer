@@ -30,5 +30,11 @@ then this shouldn't be *that* difficult. If not then this will also be a pain.
 Also animating the sine wave is something I want to do. This might be too difficult. We'll see how we're
 feeling by thte time we get to that point.
 
+### To-Do
+* Animate waves
+* Generate Sound
+* Amplitude Bar
+* Interval Buttons
+
 
 
