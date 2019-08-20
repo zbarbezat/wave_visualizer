@@ -3,6 +3,7 @@
     <head>
             <link rel="stylesheet" type="text/css" href="style.css">
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> <!--JQuery-->
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/13.0.1/Tone.min.js"></script>
     </head>
     <body onload="init()">
         <h1>Waveform Visualizer</h1>
@@ -33,34 +34,38 @@
         var canvas = document.getElementById("myCanvas");
         var ctx = canvas.getContext("2d");
         var step = 60;
-
+        const synth = new Tone.PolySynth(4, Tone.MonoSynth);
+        
+        synth.set({
+            "oscillator" : {
+                "type" : "sine"
+            }
+        });
+		
+		synth.toMaster();
+		
         $(".key").on("click", (function(event) {
+            synth.triggerRelease();
             var canvas = document.getElementById("myCanvas");
             console.log($(this).attr('class'));
             $(this).toggleClass('key').toggleClass('key clicked-key');
             frequency = $(this)[0].id;
             if ($(this).attr('class') == "key clicked-key" || $(this).attr('class') == "non key clicked-key") {
                 totFreq.push(frequency);
+                synth.triggerAttack(frequency, Tone.context.currentTime);
             }
             else {
                 var index = totFreq.indexOf(frequency);
                 if (index > -1) {
                 totFreq.splice(index, 1);
                 }
-            }  
+                synth.triggerRelease(frequency);
+            }
+            
             plotSine();
+            
         }));
-
-        // $(".clicked-key").on("click", (function(event) {
-        //     console.log("Clicked key was cliiiiicked");
-        //     var canvas = document.getElementById("myCanvas");
-        //     $(this).toggleClass('key').toggleClass('clicked-key');
-        //     var frequency = $(this)[0].id;
-            
-            
-        //     plotSine();
-        // }));
-
+        
         function showAxes(ctx,axes) {
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
