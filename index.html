@@ -5,7 +5,7 @@
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> <!--JQuery-->
     </head>
     <body onload="init()">
-        <h1>Waveform Visualizer</h1>
+        <div id="box"><h1>Waveform Visualizer</h1></div>
         <div id="content">
             <div id="piano">
                 <div class="keys">
@@ -24,7 +24,7 @@
                 </div>
             </div>
             <div id="waveforms">
-                <canvas id="myCanvas" width="350" height="350" style="border:4px solid #000000;"></canvas>
+                <canvas id="myCanvas" width="350" height="350" style="border:4px solid white;"></canvas>
             </div>
         </div>
     </body>
@@ -33,43 +33,56 @@
         var canvas = document.getElementById("myCanvas");
         var ctx = canvas.getContext("2d");
         var step = 60;
-
+        var stop = true;
+        const synth = new Tone.PolySynth(4, Tone.MonoSynth);
+        
+        synth.set({
+            "oscillator" : {
+                "type" : "sine"
+            }
+        });
+		
+		synth.toMaster();
+		
         $(".key").on("click", (function(event) {
+            if (totFreq.length == 0) {
+                stop = true;
+            }
+
+            synth.triggerRelease();
             var canvas = document.getElementById("myCanvas");
             console.log($(this).attr('class'));
             $(this).toggleClass('key').toggleClass('key clicked-key');
             frequency = $(this)[0].id;
             if ($(this).attr('class') == "key clicked-key" || $(this).attr('class') == "non key clicked-key") {
                 totFreq.push(frequency);
+                stop = false;
+                synth.triggerAttack(frequency, Tone.context.currentTime);
             }
             else {
                 var index = totFreq.indexOf(frequency);
                 if (index > -1) {
                 totFreq.splice(index, 1);
                 }
-            }  
-            plotSine();
+                synth.triggerRelease(frequency);
+            }
+            
+            draw();
+            
         }));
-
-        // $(".clicked-key").on("click", (function(event) {
-        //     console.log("Clicked key was cliiiiicked");
-        //     var canvas = document.getElementById("myCanvas");
-        //     $(this).toggleClass('key').toggleClass('clicked-key');
-        //     var frequency = $(this)[0].id;
-            
-            
-        //     plotSine();
-        // }));
-
-        function showAxes(ctx,axes) {
+        
+        function showAxes(ctx) {
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
             var width = ctx.canvas.width;
             var height = ctx.canvas.height;
             var xMin = 0;
             
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0,0,500,500);
+
             ctx.beginPath();
-            ctx.strokeStyle = "rgb(0,0,0)";
+            ctx.strokeStyle = "#04ff00";
             
             // X-Axis
             ctx.moveTo(xMin, height/2);
@@ -78,10 +91,6 @@
             // Y-Axis
             ctx.moveTo(width/2, 0);
             ctx.lineTo(width/2, height);
-
-            // Starting line
-            ctx.moveTo(0, 0);
-            ctx.lineTo(0, height);
             
             ctx.stroke();
         }
@@ -94,28 +103,49 @@
             return y;
         }
 
-        function plotSine() {
+        function plotSine(ctx, xOffset) {
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
             ctx.clearRect(0, 0, 500, 500);
+            ctx.fillStyle = "#000000";
+            ctx.fillRect(0,0,500,500);
             showAxes();
             var width = ctx.canvas.width;
             var height = ctx.canvas.height;
             var scale = 10;
 
             ctx.beginPath();
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = "rgb(66,44,255)";
+            ctx.lineWidth = .75;
+            ctx.strokeStyle = "#04ff00";
             
             var amplitude = 10;
 
             x = 0;
             while (x < width) {
-                y = height/2 + amplitude * calculateSine(x);
+                y = height/2 + amplitude * calculateSine(x + xOffset);
                 ctx.lineTo(x, y);
                 x++;
             }
             ctx.stroke();
+            ctx.restore();
+        }
+
+        function draw() {
+            var canvas = document.getElementById("myCanvas");
+            var context = canvas.getContext("2d");
+            context.clearRect(0, 0, 500, 500);
+            showAxes(context);
+            context.save(); 
+            
+            if (stop == true) {
+                return;
+            }
+            
+            plotSine(context, step);
+            context.restore();
+            
+            step += 4;
+            window.requestAnimationFrame(draw);
         }
 
         function init() {
