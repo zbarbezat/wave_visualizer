@@ -34,48 +34,38 @@
         var canvas = document.getElementById("myCanvas");
         var ctx = canvas.getContext("2d");
         var step = 60;
-		const synth = new Tone.Synth();
-		synth.oscillator.type = "sine";
+        const synth = new Tone.PolySynth(4, Tone.MonoSynth);
+        
+        synth.set({
+            "oscillator" : {
+                "type" : "sine"
+            }
+        });
+		
 		synth.toMaster();
 		
         $(".key").on("click", (function(event) {
+            synth.triggerRelease();
             var canvas = document.getElementById("myCanvas");
             console.log($(this).attr('class'));
             $(this).toggleClass('key').toggleClass('key clicked-key');
             frequency = $(this)[0].id;
             if ($(this).attr('class') == "key clicked-key" || $(this).attr('class') == "non key clicked-key") {
                 totFreq.push(frequency);
+                synth.triggerAttack(frequency, Tone.context.currentTime);
             }
             else {
                 var index = totFreq.indexOf(frequency);
                 if (index > -1) {
                 totFreq.splice(index, 1);
                 }
-            }  
+                synth.triggerRelease(frequency);
+            }
+            
             plotSine();
-			if(totFreq.length > 0) {
-				totFreq.forEach(playSound);
-			}
-			else {
-				synth.triggerRelease();
-			}
+            
         }));
-
-
-        // $(".clicked-key").on("click", (function(event) {
-        //     console.log("Clicked key was cliiiiicked");
-        //     var canvas = document.getElementById("myCanvas");
-        //     $(this).toggleClass('key').toggleClass('clicked-key');
-        //     var frequency = $(this)[0].id;
-            
-            
-        //     plotSine();
-        // }));
-		function playSound(frequency) {
-			Tone.context.resume().then(() => {
-				synth.triggerAttack(frequency, Tone.context.currentTime)
-			});
-		}
+        
         function showAxes(ctx,axes) {
             var canvas = document.getElementById("myCanvas");
             var ctx = canvas.getContext("2d");
