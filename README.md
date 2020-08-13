@@ -4,8 +4,6 @@
 Create a web app that allows a user to visualize the waveforms of musical pitches, 
 intervals, and chords through an interactive piano keyboard interface
 
-*What follows is my basic plan... We might have to make use of other external libraries if things get hairy*
-
 ### Technologies Used
 * JavaScript
 * CSS
@@ -29,12 +27,6 @@ then this shouldn't be *that* difficult. If not then this will also be a pain.
 
 Also animating the sine wave is something I want to do. This might be too difficult. We'll see how we're
 feeling by thte time we get to that point.
-
-### To-Do
-* Animate waves
-* Generate Sound
-* Amplitude Bar
-* Interval Buttons
 
 
 
